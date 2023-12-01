@@ -8,7 +8,7 @@ Space Invaders tribute game built with python and they pygame engine
 
 This is a Python implementation of the classic arcade game, Space Invaders, using the Pygame library. The player controls a spaceship at the bottom of the screen that can move left or right and shoot bullets upwards to destroy the enemies. The game ends if an enemy reaches the player or if all enemies are destroyed.
 
-#Game Art
+# Game Art
 
 ![spacesprite](https://github.com/Joecode22/Space-Invaders/assets/93625431/8a7808a6-944d-4bcd-9495-58e2e2f55ae9)
 ![ship](https://github.com/Joecode22/Space-Invaders/assets/93625431/62ae77cb-f042-4af0-a5ac-6150f4dcf502)
