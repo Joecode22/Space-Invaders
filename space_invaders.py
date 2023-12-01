@@ -24,6 +24,10 @@ clock = pygame.time.Clock()
 pygame.mixer.music.load('music.mp3')
 pygame.mixer.music.play(-1)  # The -1 makes the music loop indefinitely
 
+# Load sound effects
+bullet_sound = pygame.mixer.Sound('bullet.mp3')
+enemy_destroyed_sound = pygame.mixer.Sound('invader_dies.mp3')
+
 # Player Class
 class Player:
     def __init__(self):
@@ -33,7 +37,6 @@ class Player:
         self.sprite = pygame.image.load('ship.png').convert_alpha()  # Load the ship sprite
         self.sprite = pygame.transform.scale(self.sprite, (50, 50))  # Scale to appropriate size
 
-
     def move(self, direction):
         if direction == "LEFT" and self.x > 0:
             self.x -= self.speed
@@ -42,9 +45,6 @@ class Player:
 
     def draw(self):
         screen.blit(self.sprite, (self.x, self.y))  # Draw the ship sprite  
-    # show a green rectangle instead of the sprite
-    # def draw(self):
-    #     pygame.draw.rect(screen, (0, 255, 0), (self.x, self.y, 50, 50))
 
 # Enemy Class
 class Enemy:
@@ -54,16 +54,12 @@ class Enemy:
         self.speed = ENEMY_SPEED
         self.sprite = pygame.image.load('spacesprite.png').convert_alpha()  # Ensure correct path
         self.sprite = pygame.transform.scale(self.sprite, (50, 50))  # Scale as needed
-    # shoe the sprite instead of the red rectangle
+
     def draw(self):
         screen.blit(self.sprite, (self.x, self.y))
 
     def move(self):
         self.y += self.speed
-
-    # show a red rectangle instead of the sprite
-    # def draw(self):
-    #     pygame.draw.rect(screen, (255, 0, 0), (self.x, self.y, 50, 50))
 
 # Bullet Class
 class Bullet:
@@ -97,6 +93,7 @@ score = 0
 
 # Main game loop
 running = True
+game_over = False
 while running:
     clock.tick(FPS)  # Control the frame rate
     screen.fill((0, 0, 0))  # Clear the screen
@@ -108,6 +105,7 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 bullets.append(Bullet(player.x, player.y))
+                bullet_sound.play()  # Play bullet sound when bullet is fired
 
     # Player movement
     keys = pygame.key.get_pressed()
@@ -139,19 +137,27 @@ while running:
         if bullet.y < 0:
             bullets.remove(bullet)
 
-    # Collision detection and updating score
+    # Play enemy destroyed sound when enemy is destroyed
     for bullet in bullets[:]:
         for enemy in enemies[:]:
             if check_collision(enemy, bullet):
                 enemies.remove(enemy)
                 bullets.remove(bullet)
                 score += SCORE_PER_ENEMY
+                enemy_destroyed_sound.play()
                 break  # Break to avoid modifying list during iteration
+
+    # Winning condition
+    if not enemies:
+        print("You won!")
+        game_over = True
+        running = False
 
     # Check if any enemy has reached the player
     for enemy in enemies:
         if enemy.y >= player.y:
             print("Game Over!")
+            game_over = True
             running = False
             break
 
@@ -160,6 +166,24 @@ while running:
     text = font.render(f"Score: {score}", 1, (255, 255, 255))
     screen.blit(text, (10, 10))
 
+    pygame.display.update()
+
+# Game over screen
+while game_over:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            game_over = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                game_over = False
+
+    screen.fill((0, 0, 0))
+    font = pygame.font.Font(None, 72)
+    if enemies:
+        text = font.render("Game Over!", 1, (255, 255, 255))
+    else:
+        text = font.render("You won!", 1, (255, 255, 255))
+    screen.blit(text, (SCREEN_WIDTH // 2 - text.get_width() // 2, SCREEN_HEIGHT // 2 - text.get_height() // 2))
     pygame.display.update()
 
 pygame.quit()
