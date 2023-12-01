@@ -10,7 +10,10 @@ This is a Python implementation of the classic arcade game, Space Invaders, usin
 
 # Game Art
 
+## Space Invader
 ![spacesprite](https://github.com/Joecode22/Space-Invaders/assets/93625431/8a7808a6-944d-4bcd-9495-58e2e2f55ae9)
+
+## Space Ship
 ![ship](https://github.com/Joecode22/Space-Invaders/assets/93625431/62ae77cb-f042-4af0-a5ac-6150f4dcf502)
 
 ## Features
